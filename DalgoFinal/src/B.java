@@ -61,18 +61,23 @@ public class B
 					nodoFin.add(data[i+1]+"."+contador);
 
 					conexiones.add(data[i]+"."+contador + " a " + data[i+1]+"."+contador);
-
 					conexiones.add(data[i+1]+"."+contador + " a " + data[i]+"."+contador);
 					
-					
-					if(estaEnConjunto(conjuntoX, data[i]+"."+contador) == false && cumpleCondicion(data[i]+"."+contador, conjuntoX))
+					if(estaEnConjunto(conjuntoX, data[i]+"."+contador) == false && cumpleCondicion(data[i]+"."+contador, "x"))
 					{
 						conjuntoX.add(data[i]+"."+contador);
-						//System.out.println("agregando al conjunto X: " + data[i]+"."+contador);
 					}
-					if(estaEnConjunto(conjuntoY, data[i+1]+"."+contador) == false && cumpleCondicion(data[i+1]+"."+contador, conjuntoY)) 
+					if(estaEnConjunto(conjuntoX, data[i+1]+"."+contador) == false && cumpleCondicion(data[i+1]+"."+contador, "x"))
+					{
+						conjuntoX.add(data[i+1]+"."+contador);
+					}
+					if(estaEnConjunto(conjuntoY, data[i+1]+"."+contador) == false && cumpleCondicion(data[i+1]+"."+contador, "y")) 
 					{
 						conjuntoY.add(data[i+1]+"."+contador);
+					}
+					if(estaEnConjunto(conjuntoY, data[i]+"."+contador) == false && cumpleCondicion(data[i]+"."+contador, "y")) 
+					{
+						conjuntoY.add(data[i]+"."+contador);
 					}
 				}
 			}
@@ -108,16 +113,26 @@ public class B
 		}
 	}
 
-	private static boolean cumpleCondicion(String nodo, ArrayList<String> c) 
+	private static boolean cumpleCondicion(String nodo, String c) 
 	{
 		boolean cumpleCondicion = true;
-		for (int i = 0; i < c.size() && cumpleCondicion; i++) 
+		if(c.equals("x"))
 		{
-			//System.out.println("nodo del " + c + ": "+ c.get(i));
-			
-			if(hayConexion(nodo, c.get(i)))
-				cumpleCondicion = false;
+			for (int i = 0; i < conjuntoX.size() && cumpleCondicion; i++) 
+			{
+				if(hayConexion(nodo, conjuntoX.get(i)))
+					cumpleCondicion = false;
+			}
 		}
+		else if(c.equals("y"))
+		{
+			for (int i = 0; i < conjuntoY.size() && cumpleCondicion; i++) 
+			{
+				if(hayConexion(nodo, conjuntoY.get(i)))
+					cumpleCondicion = false;
+			}
+		}
+		
 		return cumpleCondicion;
 	}
 
@@ -132,7 +147,6 @@ public class B
 			if((inicio.equals(nodo1) && fin.equals(nodo2)) || (inicio.equals(nodo2) && fin.equals(nodo1)))
 			{
 				resp = true;
-				System.out.println("conexion entre " + nodo1 + " y " + nodo2);
 			}
 		}
 		
