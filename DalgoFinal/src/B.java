@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,9 +6,7 @@ import java.util.ArrayList;
 public class B 
 {
 
-	private static int numGrafos;
-	private static int numNodos;
-	private static int numArcos;
+	private static int numGrafos, numNodos, numArcos;
 	private static ArrayList<String> nodoInic, nodoFin, conjuntoX, conjuntoY, conexiones;
 	
 	public static void main(String[] args) throws IOException
@@ -21,7 +17,6 @@ public class B
 	
 		int contador = 0;
 		
-
 		conjuntoX = new ArrayList<>();
 		conjuntoY = new ArrayList<>();
 		conexiones = new ArrayList<>();
@@ -40,6 +35,8 @@ public class B
 			nodoInic = new ArrayList<>();
 			nodoFin = new ArrayList<>();
 			
+			String anterior = null;
+			
 			if(data.length == 1)
 			{
 				contador = 0;
@@ -54,63 +51,64 @@ public class B
 			{
 				numNodos =  Integer.parseInt(data[0]);
 				numArcos =  Integer.parseInt(data[1]);
-				for (int i = 2; i < data.length; i = i+2) 
+				if(numNodos == 1 && numArcos == 0)
 				{
-					nodoInic.add(data[i]+"."+contador);
-
-					nodoFin.add(data[i+1]+"."+contador);
-
-					conexiones.add(data[i]+"."+contador + " a " + data[i+1]+"."+contador);
-					conexiones.add(data[i+1]+"."+contador + " a " + data[i]+"."+contador);
+					if(contador>1)
+					anterior = 0+"."+(contador-1);
 					
-					if(estaEnConjunto(conjuntoX, data[i]+"."+contador) == false && cumpleCondicion(data[i]+"."+contador, "x"))
+					conectar(anterior, 0+"."+contador);
+					
+					if(estaEnConjunto(conjuntoX, 0+"."+contador) == false && cumpleCondicion(0+"."+contador, "x"))
 					{
-						conjuntoX.add(data[i]+"."+contador);
+						conjuntoX.add(0+"."+contador);
 					}
-					if(estaEnConjunto(conjuntoX, data[i+1]+"."+contador) == false && cumpleCondicion(data[i+1]+"."+contador, "x"))
+					else if(estaEnConjunto(conjuntoY, 0+"."+contador) == false && cumpleCondicion(0+"."+contador, "y")) 
 					{
-						conjuntoX.add(data[i+1]+"."+contador);
-					}
-					if(estaEnConjunto(conjuntoY, data[i+1]+"."+contador) == false && cumpleCondicion(data[i+1]+"."+contador, "y")) 
-					{
-						conjuntoY.add(data[i+1]+"."+contador);
-					}
-					if(estaEnConjunto(conjuntoY, data[i]+"."+contador) == false && cumpleCondicion(data[i]+"."+contador, "y")) 
-					{
-						conjuntoY.add(data[i]+"."+contador);
+						conjuntoY.add(0+"."+contador);
 					}
 				}
-			}
-			
-			System.out.println("conjunto X:");
-			for (int i = 0; i < conjuntoX.size(); i++) 
-			{
-				System.out.println(conjuntoX.get(i));
-			}
-			System.out.println("conjunto Y:");
-			for (int i = 0; i < conjuntoY.size(); i++) 
-			{
-				System.out.println(conjuntoY.get(i));
+				else
+				{
+					for (int i = 2; i < data.length; i = i+2) 
+					{
+						nodoInic.add(data[i]+"."+contador);
+						nodoFin.add(data[i+1]+"."+contador);
+						conexiones.add(data[i]+"."+contador + " a " + data[i+1]+"."+contador);
+						conexiones.add(data[i+1]+"."+contador + " a " + data[i]+"."+contador);
+						
+						if(estaEnConjunto(conjuntoX, data[i]+"."+contador) == false && cumpleCondicion(data[i]+"."+contador, "x"))
+						{
+							conjuntoX.add(data[i]+"."+contador);
+						}
+						if(estaEnConjunto(conjuntoX, data[i+1]+"."+contador) == false && cumpleCondicion(data[i+1]+"."+contador, "x"))
+						{
+							conjuntoX.add(data[i+1]+"."+contador);
+						}
+						if(estaEnConjunto(conjuntoY, data[i+1]+"."+contador) == false && cumpleCondicion(data[i+1]+"."+contador, "y")) 
+						{
+							conjuntoY.add(data[i+1]+"."+contador);
+						}
+						if(estaEnConjunto(conjuntoY, data[i]+"."+contador) == false && cumpleCondicion(data[i]+"."+contador, "y")) 
+						{
+							conjuntoY.add(data[i]+"."+contador);
+						}
+					}
+				}
 			}
 			
 			contador++;
 			
-			if(contador >= numGrafos)
+			if(contador > numGrafos)
 			{
-				if(contador == numGrafos)
-					System.out.println(respuestaB());
-					/*System.out.println("numero de Grafos: " + numGrafos);
-				;
-				System.out.println("numero de Nodos: " + numNodos);
-				System.out.println("numero de Arcos: " + numArcos);
-				for (int i = 0; i < conexiones.size(); i++) 
-				{
-					System.out.println(conexiones.get(i));
-				}
-				*/
-				//crearGrafo(numNodos, numArcos, nodoInic, nodoFin);
+				System.out.println(respuestaB());
 			}
 		}
+	}
+
+	private static void conectar(String anterior, String actual) 
+	{
+		conexiones.add(anterior + " a " + actual);
+		conexiones.add(actual + " a " + anterior);
 	}
 
 	private static boolean cumpleCondicion(String nodo, String c) 
@@ -169,14 +167,11 @@ public class B
 	private static String respuestaB() 
 	{
 		String answer = "Hello World";
+		if(conjuntoX.size() - conjuntoY.size() >= 0)
+			answer = (conjuntoX.size() - conjuntoY.size())+"";
+		else
+			answer = (conjuntoY.size() - conjuntoX.size())+"";
+		
 		return answer;
 	}
-
-	/*private static void crearGrafo(int numNodos2, int numArcos2, ArrayList<Integer> nodoInic2, ArrayList<Integer> nodoFin2) 
-	{
-		Grafo grafo = new Grafo(numArcos2, numNodos2);
-		grafo.llenarNodos();
-		grafo.llenarArcos(nodoInic2, nodoFin2);
-	}*/
-
 }
