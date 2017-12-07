@@ -11,8 +11,7 @@ public class B
 	private static int numGrafos;
 	private static int numNodos;
 	private static int numArcos;
-	private static ArrayList<Integer> nodoInic;
-	private static ArrayList<Integer> nodoFin;
+	private static ArrayList<String> nodoInic, nodoFin, conjuntoX, conjuntoY, conexiones;
 	
 	public static void main(String[] args) throws IOException
 	{
@@ -21,6 +20,11 @@ public class B
 		String lineain,data[];
 	
 		int contador = 0;
+		
+
+		conjuntoX = new ArrayList<>();
+		conjuntoY = new ArrayList<>();
+		conexiones = new ArrayList<>();
 
 		while(true)
 		{
@@ -39,6 +43,9 @@ public class B
 			if(data.length == 1)
 			{
 				contador = 0;
+				conexiones = new ArrayList<>();
+				conjuntoX = new ArrayList<>();
+				conjuntoY = new ArrayList<>();
 				numGrafos = -1;
 				numGrafos = Integer.parseInt(data[0]);	
 			}
@@ -49,9 +56,36 @@ public class B
 				numArcos =  Integer.parseInt(data[1]);
 				for (int i = 2; i < data.length; i = i+2) 
 				{
-					nodoInic.add(Integer.parseInt(data[i]));
-					nodoFin.add(Integer.parseInt(data[i+1]));	
+					nodoInic.add(data[i]+"."+contador);
+
+					nodoFin.add(data[i+1]+"."+contador);
+
+					conexiones.add(data[i]+"."+contador + " a " + data[i+1]+"."+contador);
+
+					conexiones.add(data[i+1]+"."+contador + " a " + data[i]+"."+contador);
+					
+					
+					if(estaEnConjunto(conjuntoX, data[i]+"."+contador) == false && cumpleCondicion(data[i]+"."+contador, conjuntoX))
+					{
+						conjuntoX.add(data[i]+"."+contador);
+						//System.out.println("agregando al conjunto X: " + data[i]+"."+contador);
+					}
+					if(estaEnConjunto(conjuntoY, data[i+1]+"."+contador) == false && cumpleCondicion(data[i+1]+"."+contador, conjuntoY)) 
+					{
+						conjuntoY.add(data[i+1]+"."+contador);
+					}
 				}
+			}
+			
+			System.out.println("conjunto X:");
+			for (int i = 0; i < conjuntoX.size(); i++) 
+			{
+				System.out.println(conjuntoX.get(i));
+			}
+			System.out.println("conjunto Y:");
+			for (int i = 0; i < conjuntoY.size(); i++) 
+			{
+				System.out.println(conjuntoY.get(i));
 			}
 			
 			contador++;
@@ -59,19 +93,63 @@ public class B
 			if(contador >= numGrafos)
 			{
 				if(contador == numGrafos)
-				System.out.println("numero de Grafos: " + numGrafos);
+					System.out.println(respuestaB());
+					/*System.out.println("numero de Grafos: " + numGrafos);
 				;
 				System.out.println("numero de Nodos: " + numNodos);
 				System.out.println("numero de Arcos: " + numArcos);
-				for (int i = 0; i < nodoInic.size(); i++) 
+				for (int i = 0; i < conexiones.size(); i++) 
 				{
-					System.out.println("Conexion de " + nodoInic.get(i) + " a " + nodoFin.get(i));
+					System.out.println(conexiones.get(i));
 				}
-				
+				*/
 				//crearGrafo(numNodos, numArcos, nodoInic, nodoFin);
-				System.out.println(respuestaB());
 			}
 		}
+	}
+
+	private static boolean cumpleCondicion(String nodo, ArrayList<String> c) 
+	{
+		boolean cumpleCondicion = true;
+		for (int i = 0; i < c.size() && cumpleCondicion; i++) 
+		{
+			//System.out.println("nodo del " + c + ": "+ c.get(i));
+			
+			if(hayConexion(nodo, c.get(i)))
+				cumpleCondicion = false;
+		}
+		return cumpleCondicion;
+	}
+
+	private static boolean hayConexion(String nodo1, String nodo2) 
+	{
+		boolean resp = false;
+		for (int i = 0; i < conexiones.size() && !resp; i++) 
+		{
+			String inicio = conexiones.get(i).substring(0, 3);
+			String fin = conexiones.get(i).substring(6, 9);
+			
+			if((inicio.equals(nodo1) && fin.equals(nodo2)) || (inicio.equals(nodo2) && fin.equals(nodo1)))
+			{
+				resp = true;
+				System.out.println("conexion entre " + nodo1 + " y " + nodo2);
+			}
+		}
+		
+		return resp;
+	}
+
+	private static boolean estaEnConjunto(ArrayList<String> conjunto, String nodo) 
+	{
+		boolean encontro = false;
+		
+		for (int i = 0; i < conjunto.size() && !encontro; i++) 
+		{
+			if(conjunto.get(i).equals(nodo))
+				encontro = true;
+		}
+		
+		return encontro;
 	}
 
 	private static String respuestaB() 
