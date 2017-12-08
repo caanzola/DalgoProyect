@@ -2,11 +2,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class A 
+public class A
 {
 
 	private static int n, posPunto;
 	private static double A, B, C, D;
+	private static Double[] arr;
 
 	public static void main(String[] args) throws IOException
 	{
@@ -34,7 +35,24 @@ public class A
 			C = Double.parseDouble(data[3]);
 			D = Double.parseDouble(data[4]);
 			
+			llenarInvariante();
+			
 			System.out.println(respuestaA());
+		}
+	}
+
+	private static void llenarInvariante() 
+	{
+		arr = new Double[n+1];
+		
+		for (int i = 0; i < arr.length; i++) 
+		{
+			if(i == 0)
+				arr[i] = A;
+			else if(i == 1)
+				arr[i] = B;
+			else if(i > 1)
+				arr[i] = D*arr[i-1] +  C*arr[i-2];
 		}
 	}
 
@@ -91,64 +109,72 @@ public class A
 	public static char[] redondear(char[] arr, int interes) 
 	{
 		char[] res = arr;
-		if((interes+2) < arr.length && res[interes+2]!=' ')
+		
+		if(posPunto > arr.length-11 && !hayE(res))
 		{
-			redondear(arr, (interes+2));
-			redondear(arr, interes+1);
-		}
-		else if((interes+1) < arr.length && res[interes+1]!=' ')
-		{
-			if(Integer.parseInt(res[interes+1]+"") > 5)
+			if((interes+2) < arr.length && res[interes+2]!=' ')
 			{
-				if((Integer.parseInt(res[interes]+"")) != 9)
+				redondear(arr, (interes+2));
+				redondear(arr, interes+1);
+			}
+			else if((interes+1) < arr.length && res[interes+1]!=' ')
+			{
+				if(Integer.parseInt(res[interes+1]+"") > 5)
 				{
-					res[interes] = ((Integer.parseInt(res[interes]+"")+1)+"").charAt(0);
-					res[interes+1] = ' ';
-				}
-				else
-				{
-					boolean termino = false;
-					for (int i = 0; interes-i != posPunto && !termino; i++) 
+					if((Integer.parseInt(res[interes]+"")) != 9)
 					{
-						if(Integer.parseInt(res[interes-i]+"") != 9)
+						res[interes] = ((Integer.parseInt(res[interes]+"")+1)+"").charAt(0);
+						res[interes+1] = ' ';
+					}
+					else
+					{
+						boolean termino = false;
+						for (int i = 0; interes-i != posPunto && !termino; i++) 
 						{
-							res[interes-i] = ((Integer.parseInt(res[interes-i]+"")+1)+"").charAt(0);
-							res[interes-i+1] = '0';
-							termino = true;
-						}
-						else
-						{
-							res[interes-i+1] = ' ';
+							if(Integer.parseInt(res[interes-i]+"") != 9)
+							{
+								res[interes-i] = ((Integer.parseInt(res[interes-i]+"")+1)+"").charAt(0);
+								res[interes-i+1] = '0';
+								termino = true;
+							}
+							else
+							{
+								res[interes-i+1] = ' ';
+							}
 						}
 					}
 				}
+				else
+				{
+					res[interes+1] = ' ';
+				}
 			}
-			else
+		}
+		else
+		{
+			for (int i = posPunto + 5; i < res.length; i++) 
 			{
-				res[interes+1] = ' ';
+				res[i] = ' ';
 			}
 		}
 
 		return res;
 	}
 
+	private static boolean hayE(char[] r) 
+	{
+		boolean devo = false;
+		for (int i = 0; i < r.length && !devo; i++) 
+		{
+			if((r[i]+"").equals("E"))
+				devo = true;
+		}
+		return devo;
+	}
+
 	public static double r(int numero)
 	{
-		double res = -10000;
-		if(numero == 0)
-		{
-			res = A;
-		}
-		else if(numero == 1)
-		{
-			res = B;
-		}
-		else if (numero > 1)
-		{
-			res = C*r(numero-2) + D*r(numero-1);
-		}
-		
-		return res;
+		return arr[numero];
 	}
 	
 	public static double cp(int ene)
@@ -162,5 +188,4 @@ public class A
 		
 		return resp;
 	}
-
 }
