@@ -1,27 +1,42 @@
 import java.util.*;
 public class PruebaC {
     public static void main( String[] args ) {
-        // DEFINE "patterns"!!!
+        // se definen los paremetros
 //        String[] patterns = {"ctta","acca","tacc","ggct","gctt","ttac"};
 //        String[] patterns = {"aab","baa","aaa","bbb"};
     	ArrayList<String> parametros = new ArrayList<String>();
+    	
+    	
+//    	parametros.add("aab");
+//    	parametros.add("baa");
+//    	parametros.add("aaa");
+//    	parametros.add("bbb");
+    	
     	parametros.add("nfid");
     	parametros.add("conf");
     	parametros.add("cial");
     	parametros.add("denc");
     	parametros.add("onfi");
     	parametros.add("enci");
+    	
+//    	parametros.add("ctta");
+//    	parametros.add("acca");
+//    	parametros.add("tacc");
+//    	parametros.add("ggct");
+//    	parametros.add("gctt");
+//    	parametros.add("ttac");
+    	
         // DEFINE "patterns"!!!
         System.out.println(stringReconstruction(parametros));
     }
     
-    public static String stringReconstruction( ArrayList<String> kmers ) {
+    public static String stringReconstruction( ArrayList<String> parametros ) {
         // crea la secuancia de parametros dividiendo cada subcadena de texto en 2 cadenas
     	
         ArrayList<String> secuencia = new ArrayList<String>();
         
         
-        secuenciaParametros(kmers, secuencia);
+        secuenciaParametros(parametros, secuencia);
         // crea un uniones entre las 2 sub cadenas que se generaron entre cada parametro
         boolean fin=false;
         ArrayList<String> nodes = new ArrayList<>();
@@ -327,30 +342,40 @@ public class PruebaC {
         String[] paths = new String[kmers.size()];
         for(int i = 0; i < paths.length; ++i) {
             String curr = kmers.get(i);
-            paths[i] = (curr.substring(0,curr.length()-1) + "." + curr.substring(1,curr.length()));
+            if(curr.substring(curr.length()-1,curr.length()).equals(";")){
+            	curr=curr.substring(0,curr.length()-1);
+            	paths[i] = (curr.substring(0,curr.length()-1) + ";" + "." + curr.substring(1,curr.length()) + ";");
+            }
+            else{
+            	paths[i] = (curr.substring(0,curr.length()-1) + "." + curr.substring(1,curr.length()));
+            }
         }
         
         String start = "";
-        ArrayList<String> ends = new ArrayList<String>();
+        String ends = "";
         for(int i = 0; i < paths.length; ++i) {
             String[] edge = paths[i].split("\\.");   
-                if(ends.size() > 0) {
-                    String add = start + " -> ";
-                    for(int j = 0; j < ends.size(); ++j) {
-                        add += (ends.get(j) + ",");
-                    }
-                    out.add(add.substring(0,add.length()-1));
-                }
+            start = edge[0];
+            ends =edge[1]; 
+            String add = start + " -> " + ends ;
+            out.add(add);
                 
-                start = edge[0];
-                ends = new ArrayList<>();
-                ends.add(edge[1]);
         }
-        String add = start + " -> ";
-        for(int j = 0; j < ends.size(); ++j) {
-            add += (ends.get(j) + ",");
+        for(int i = 0; i < paths.length; ++i) {
+        	String[] edge = paths[i].split("\\.");  
+        	start = edge[0];
+            ends =edge[1]; 
+        	if( start.equals(ends)){
+            	String nodoIgual = ends+";";
+            	for(int j = 0; j < out.size(); ++j) {
+            		String[] parteAux = out.get(j).split(" -> ");
+            		if(parteAux[0].equals(ends) && i!=j) {
+            			out.set(j, nodoIgual+" -> "+parteAux[1]);
+            		}
+            	}
+            	out.set(i, start+" -> "+nodoIgual);
+            }
         }
-        out.add(add.substring(0,add.length()-1));
         return out;
     }
 }
