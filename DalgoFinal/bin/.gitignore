@@ -1,5 +1,11 @@
 /A.class
 /B.class
 /C.class
+<<<<<<< HEAD
 /ProblemaA.class
 /ProblemaB.class
+=======
+/PruebaC.class
+/ProblemaC.class
+/PruebaC
+>>>>>>> 8495691098eb9d04a0131d71cc27a19030f81be2
