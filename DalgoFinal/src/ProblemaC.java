@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class C 
+public class ProblemaC 
 {	
 	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	// parametros ingresados
