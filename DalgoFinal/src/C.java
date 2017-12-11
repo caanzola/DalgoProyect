@@ -1,7 +1,5 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 public class C 
 {	
@@ -19,20 +17,19 @@ public class C
 		try {
 			String ac;
 			while((ac = br.readLine())!= null && !ac.equals("")){
-				String[] info = ac.split(" ");
-				respuestaMin = Integer.MAX_VALUE;
-				n = Integer.parseInt(info[0]);
-				k = Integer.parseInt(info[1]);
+				String[] pre = ac.split(" ");
+				n = Integer.parseInt(pre[0]);
+				k = Integer.parseInt(pre[1]);
 				parametros = new String[n];
 				for(int i=0;i<n;i++){
 					String actual = br.readLine();
 					parametros[i] = actual;
 				}
+				respuestaMin = (n*k)+2;
 				permutacion(parametros, 0);
 				System.out.println(respuesta);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -57,19 +54,21 @@ public class C
 			if(act <= respuestaMin) {
 				respuestaMin = act;
 				respuesta = respActual;
-			}	        
-			return;
+			}
 		}
-		// cambia el orden de los parametros
-		for(int i = index; i < arr.length; i++)
+		else
 		{
-			String temp = arr[index];
-			arr[index] = arr[i];
-			arr[i] = temp;
-			permutacion(arr, index+1);
-			temp = arr[index];
-			arr[index] = arr[i];
-			arr[i] = temp;
+		// cambia el orden de los parametros
+			for(int i = index; i < arr.length; i++)
+			{
+				String temp = arr[index];
+				arr[index] = arr[i];
+				arr[i] = temp;
+				permutacion(arr, index+1);
+				temp = arr[index];
+				arr[index] = arr[i];
+				arr[i] = temp;
+			}
 		}
 	}
 	// encuentra la palabra mas corta posible de un arreglo de Strings uniendolos consecutivamente
@@ -79,6 +78,7 @@ public class C
 		for(int i = 1; i < s.length;i++) 
 		{
 			String actual = s[i];
+			
 			String[] letras = actual.split("");
 			String[] letrasAnterior = result.substring(result.length()-k, result.length()).split("");
 			
@@ -89,10 +89,12 @@ public class C
 				for(int j = 0; j < k;j++) 
 				{
 					String letraActual = letras[j];
-					if(letrasAnterior[letrasAnterior.length-1].equals(letraActual)){
+					if(letrasAnterior[letrasAnterior.length-1].equals(letraActual))
+					{
 						dif = actual.substring(0, j+1);
 						String difAnterior = anterior.substring(anterior.length()-dif.length(),anterior.length());
-						if(difAnterior.equals(dif)) {
+						if(difAnterior.equals(dif)) 
+						{
 							add = actual.substring(j+1,actual.length());
 						}
 					}
@@ -103,5 +105,4 @@ public class C
 		}
 		return result;
 	}
-
 }
