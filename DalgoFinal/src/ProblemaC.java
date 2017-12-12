@@ -1,3 +1,7 @@
+/*
+ * Autores: Camilo Anzola y Santiago Rodriguez
+ */
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
